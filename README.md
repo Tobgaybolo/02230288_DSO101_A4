@@ -89,4 +89,4 @@ test_app.py::test_add_zeros PASSED
 - [x] CI pipeline – build + test steps in GitHub Actions
 - [x] Unit tests with pytest (6 tests)
 - [x] Deployment automation via Render webhook
-- [x] Documentation (this README)
+- [x] Documentation (this README).
