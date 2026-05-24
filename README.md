@@ -97,50 +97,70 @@ test_app.py::test_add_zeros PASSED             [100%]
 
 ## CI/CD Pipeline
 
-The pipeline runs automatically on every push to `main`:
+Automated pipeline defined in `.github/workflows/ci.yml`, triggered on every push to `main`.
 
-1. **Checkout** – pulls latest code
-2. **Setup Python** – installs Python 3.9
-3. **Cache** – speeds up future runs
-4. **Install Dependencies** – `pip install -r requirements.txt`
-5. **Run Tests** – `pytest test_app.py -v`
-6. **Deploy to Render** – triggers auto-deploy via webhook
+### Pipeline Steps
 
-## Deployment (Render)
+| Step | Description | Status |
+|------|-------------|--------|
+| Set up job | Prepare runner environment | ✅ |
+| Checkout Code | Pull latest source code | ✅ |
+| Set up Python 3.9 | Install Python environment | ✅ |
+| Install Dependencies | `pip install -r requirements.txt` | ✅ |
+| Run Tests with pytest | Execute all 6 unit tests | ✅ |
+| Deploy message | Trigger Render deployment | ✅ |
 
-### Step-by-Step Setup
+### Pipeline Result
 
-1. Go to [render.com](https://render.com) and sign up
-2. Click **New → Web Service**
-3. Connect your GitHub repo
-4. Set these values:
-   - **Build Command:** `pip install -r requirements.txt`
-   - **Start Command:** `gunicorn app:app`
-5. Click **Deploy**
-6. Copy your **Deploy Hook URL** from Render dashboard
-7. In GitHub → Settings → Secrets → Actions, add:
-   - Name: `RENDER_DEPLOY_HOOK`
-   - Value: (paste your Render deploy hook URL)
+![alt text](<images/Screenshot 2026-05-12 at 8.22.18 PM.png>)
 
-Now every push to `main` automatically tests and deploys your app!
+**build-test-deploy** — succeeded in 17s ✅
 
-## Test Output
+---
 
+## Local App Running
+
+![alt text](<images/Screenshot 2026-05-12 at 8.12.09 PM.png>)
 ```
-test_app.py::test_home PASSED
-test_app.py::test_home_route PASSED
-test_app.py::test_home_route_json PASSED
-test_app.py::test_health_route PASSED
-test_app.py::test_add_route PASSED
-test_app.py::test_add_zeros PASSED
-
-6 passed in 0.42s
+* Serving Flask app 'app'
+* Running on http://127.0.0.1:5001
 ```
 
-## Marking Criteria Checklist
+---
 
-- [x] Project structure (app.py, test_app.py, requirements.txt, ci.yml)
-- [x] CI pipeline – build + test steps in GitHub Actions
-- [x] Unit tests with pytest (6 tests)
-- [x] Deployment automation via Render webhook
-- [x] Documentation (this README)
+## Live App
+![alt text](<images/Screenshot 2026-05-12 at 1.26.41 PM.png>)
+![alt text](<images/Screenshot 2026-05-12 at 8.12.52 PM.png>)
+The application is deployed on Render and accessible at:
+**[https://02230288-dso101-a4.onrender.com](https://02230288-dso101-a4.onrender.com)**
+
+---
+
+## Dependencies
+
+```
+flask==3.0.3
+pytest==8.2.2
+gunicorn==22.0.0
+```
+---
+## Challenges Faced
+
+**Port Conflict on macOS**
+The most immediate challenge was that Flask's default port 5000 was already occupied by macOS AirPlay Receiver. This prevented the app from starting. The issue was resolved by disabling AirPlay Receiver in System Settings and running the app on port 5001 instead.
+
+**Dependency Conflicts During Installation**
+When installing packages via `pip install -r requirements.txt`, several warnings appeared about conflicting versions — particularly with Spyder's pyqt5 requirement and the black formatter version. While these did not break the project, they required careful reading to confirm the core packages (Flask, pytest, gunicorn) installed correctly.
+
+**Setting Up the GitHub Actions Workflow**
+The `.github/workflows/ci.yml` file was not pushed automatically with the initial commit, causing the Actions tab to show the default "Get started" page instead of the pipeline. This was resolved by manually creating the workflow file directly through the GitHub web editor.
+
+**Understanding the CI/CD Flow**
+Connecting all the pieces — local development, GitHub version control, automated testing in Actions, and deployment on Render — required understanding how each tool interacts. Configuring the Render deploy hook as a GitHub secret to trigger automatic deployment was a new concept that took time to set up correctly.
+
+---
+## Conclusion
+
+This assignment successfully demonstrated the implementation of a full CI/CD pipeline from development to deployment. A Flask API was built with three functional endpoints, six unit tests were written and verified using pytest with all passing, and a GitHub Actions workflow was configured to automatically run the pipeline on every push to the main branch. The application was deployed to Render with auto-deployment triggered via a webhook secret.
+
+The project provided practical insight into how real-world software teams automate their development workflows. By integrating testing directly into the pipeline, bugs can be caught before they reach production, and deployment becomes a reliable, repeatable process rather than a manual task. Overall, the assignment reinforced the value of DevOps practices in building maintainable and reliable software systems.
